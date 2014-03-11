@@ -535,6 +535,7 @@ public class CreateMojo
     {
         if (StringUtils.isNumeric(input))
         {
+            getLog().info("commitNumber + buildNumberIncrement = " + commitNumber + " + " + buildNumberIncrement);
             return String.valueOf(Integer.parseInt(commitNumber) + this.buildNumberIncrement);
         } else {
             return input;
@@ -674,6 +675,9 @@ public class CreateMojo
         try
         {
             ScmRepository repository = getScmRepository();
+            if (GitScmProviderRepository.PROTOCOL_GIT.equals(scmManager.getProviderByRepository( repository ).getScmType())) {
+                return gitBranchName(new ScmFileSet(scmDirectory));
+            }
             InfoScmResult scmResult = infoCommitId(repository, new ScmFileSet(scmDirectory));
             if ( scmResult == null || !scmResult.isSuccess() )
             {
@@ -897,8 +901,24 @@ public class CreateMojo
 
         return infoResult;
     }
-    
 
+
+    private String gitBranchName(ScmFileSet fileSet) throws ScmException
+    {
+        CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
+
+        Commandline cl = GitCommandLineUtils.getBaseGitCommandLine( fileSet.getBasedir(), "branch" );
+        cl.createArg().setValue( "--no-color");
+        cl.createArg().setValue( "--contains");
+        cl.createArg().setValue("HEAD");
+        GitBranchConsumer gitBranchConsumer = new GitBranchConsumer(getLogger());
+
+        int exitCode = GitCommandLineUtils.execute(cl, gitBranchConsumer, stderr, getLogger());
+        if (exitCode != 0) {
+            throw new ScmException("The git-branch command failed: " + stderr.getOutput());
+        }
+        return gitBranchConsumer.getBranchName();
+    }
 
     /**
      * @return

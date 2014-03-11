@@ -1,4 +1,3 @@
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -44,7 +43,20 @@ try
     JarFile jar = new JarFile( artifact );
     
     Attributes manifest = jar.getManifest().getMainAttributes();
-    
+
+    String scmBranch = manifest.get( new Attributes.Name( "SCM-Branch" ) );
+    System.out.println( "SCM-Branch: " + scmBranch);
+    if ( scmBranch == null || scmBranch.length() < 1 )
+    {
+        System.err.println( "No manifest entry SCM-Branch" );
+        return false;
+    }
+    if ( "UNKNOWN_BRANCH".equals(scmBranch) )
+    {
+        System.err.println( "SCM-Branch has default value: UNKNOWN_BRANCH, but branch name is expected" );
+        return false;
+    }
+
     String scmRev = manifest.get( new Attributes.Name( "SCM-Revision" ) );
     if ( scmRev == null || scmRev.length() < 1 )
     {

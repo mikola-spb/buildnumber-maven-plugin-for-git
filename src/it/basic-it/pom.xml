@@ -48,6 +48,7 @@
               <goal>create</goal>
             </goals>
             <configuration>
+              <useLastCommittedRevision>true</useLastCommittedRevision>
               <buildNumberPropertyName>incrementedBuildNumber</buildNumberPropertyName>
               <buildNumberIncrement>13</buildNumberIncrement>
             </configuration>
@@ -66,6 +67,7 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>
+              <SCM-Branch>${scmBranch}</SCM-Branch>
               <SCM-Revision>${buildNumber}</SCM-Revision>
               <INC-Revision>${incrementedBuildNumber}</INC-Revision>
               <Build-Date>${timestamp}</Build-Date>
