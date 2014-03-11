@@ -20,6 +20,8 @@ public class GitBranchConsumer extends AbstractConsumer {
 
         if (line.startsWith(CURRENT_BRANCH_PREFIX)) {
             handleCurrentBranchLine(line);
+        } else {
+            handleBranchLine(line);
         }
     }
 
@@ -30,5 +32,11 @@ public class GitBranchConsumer extends AbstractConsumer {
     private void handleCurrentBranchLine(String line) {
         String value = line.substring(CURRENT_BRANCH_PREFIX.length());
         branchName = value.equals(NO_BRANCH_LINE) ? null : value;
+    }
+
+    private void handleBranchLine(String line) {
+        if (branchName == null && !line.equals(NO_BRANCH_LINE)) {
+            branchName = line.trim();
+        }
     }
 }
