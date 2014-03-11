@@ -5,7 +5,8 @@ import org.apache.maven.scm.log.ScmLogger;
 import org.apache.maven.scm.util.AbstractConsumer;
 
 public class GitBranchConsumer extends AbstractConsumer {
-    public static final String CURRENT_BRANCH_PREFIX = "* ";
+    private static final String CURRENT_BRANCH_PREFIX = "* ";
+    private static final String NO_BRANCH_LINE = "(no branch)";
     private String branchName;
 
     public GitBranchConsumer(ScmLogger logger) {
@@ -27,6 +28,7 @@ public class GitBranchConsumer extends AbstractConsumer {
     }
 
     private void handleCurrentBranchLine(String line) {
-        branchName = line.substring(CURRENT_BRANCH_PREFIX.length());
+        String value = line.substring(CURRENT_BRANCH_PREFIX.length());
+        branchName = value.equals(NO_BRANCH_LINE) ? null : value;
     }
 }

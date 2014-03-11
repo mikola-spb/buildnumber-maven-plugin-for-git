@@ -916,7 +916,8 @@ public class CreateMojo
         if (exitCode != 0) {
             throw new ScmException("The git-branch command failed: " + stderr.getOutput());
         }
-        return gitBranchConsumer.getBranchName();
+        String branchName = gitBranchConsumer.getBranchName();
+        return branchName != null ? branchName : DEFAULT_BRANCH_NAME;
     }
 
     /**
