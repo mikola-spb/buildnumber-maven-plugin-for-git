@@ -535,7 +535,6 @@ public class CreateMojo
     {
         if (StringUtils.isNumeric(input))
         {
-            getLog().info("commitNumber + buildNumberIncrement = " + commitNumber + " + " + buildNumberIncrement);
             return String.valueOf(Integer.parseInt(commitNumber) + this.buildNumberIncrement);
         } else {
             return input;
