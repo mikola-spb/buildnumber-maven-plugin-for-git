@@ -7,7 +7,7 @@ import org.apache.maven.scm.util.AbstractConsumer;
 public class GitBranchConsumer extends AbstractConsumer {
     private static final String DETACHED = "DETACHED";
     private static final String CURRENT_BRANCH_PREFIX = "*";
-    private static final String BRANCH_NAME_PATTERN = "[\\w_-]+";
+    private static final String BRANCH_NAME_PATTERN = "[\\w/_-]+";
     private String branchName;
 
     public GitBranchConsumer(ScmLogger logger) {

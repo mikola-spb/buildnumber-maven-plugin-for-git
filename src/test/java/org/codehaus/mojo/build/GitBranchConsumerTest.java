@@ -17,6 +17,13 @@ public class GitBranchConsumerTest {
     }
 
     @Test
+    public void consumeLine_current_validRemoteBranch() throws Exception {
+        gitBranchConsumer.consumeLine("* origin/master");
+        gitBranchConsumer.consumeLine("  another");
+        assertEquals("origin/master", gitBranchConsumer.getBranchName());
+    }
+
+    @Test
     public void consumeLine_current_noBranch() throws Exception {
         gitBranchConsumer.consumeLine("* (no branch)");
         gitBranchConsumer.consumeLine("  another");

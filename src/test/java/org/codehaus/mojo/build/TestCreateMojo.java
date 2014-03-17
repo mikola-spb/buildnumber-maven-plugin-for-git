@@ -21,12 +21,12 @@ package org.codehaus.mojo.build;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import org.codehaus.plexus.PlexusTestCase;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
-
-import org.codehaus.plexus.PlexusTestCase;
 
 public class TestCreateMojo
     extends PlexusTestCase
@@ -134,5 +134,13 @@ public class TestCreateMojo
     	assertEquals("branches/v1.2.x", mojo.filterBranchFromScmUrl(scmUrlBranch));
     	String scmUrlTag = "https://mifos.dev.java.net/svn/mifos/tags/v1.2.1";
     	assertEquals("tags/v1.2.1", mojo.filterBranchFromScmUrl(scmUrlTag));
+    }
+
+    public void testFilterOriginRemote() {
+        CreateMojo mojo = new CreateMojo();
+        assertEquals("master", mojo.filterOriginRemote("master"));
+        assertEquals("master", mojo.filterOriginRemote("origin/master"));
+        assertEquals("master", mojo.filterOriginRemote("origin/remote/master"));
+        assertEquals("strange format", mojo.filterOriginRemote("strange format"));
     }
 }

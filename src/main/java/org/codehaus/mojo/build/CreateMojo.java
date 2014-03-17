@@ -26,12 +26,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.scm.CommandParameter;
-import org.apache.maven.scm.CommandParameters;
-import org.apache.maven.scm.ScmException;
-import org.apache.maven.scm.ScmFile;
-import org.apache.maven.scm.ScmFileSet;
-import org.apache.maven.scm.ScmResult;
+import org.apache.maven.scm.*;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.command.info.InfoScmResult;
 import org.apache.maven.scm.command.status.StatusScmResult;
@@ -56,16 +51,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This mojo is designed to give you a build number. So when you might make 100 builds of version
@@ -917,7 +906,7 @@ public class CreateMojo
         String gitBranchEnv = System.getenv("GIT_BRANCH");
         if (gitBranchEnv != null) {
             getLog().debug("Environment variable GIT_BRANCH is used: " + gitBranchEnv);
-            return gitBranchEnv;
+            return filterOriginRemote(gitBranchEnv);
         }
 
         CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
@@ -931,7 +920,15 @@ public class CreateMojo
             throw new ScmException("The git-branch command failed: " + stderr.getOutput());
         }
         String branchName = gitBranchConsumer.getBranchName();
-        return branchName != null ? branchName : DEFAULT_BRANCH_NAME;
+        return branchName != null ? filterOriginRemote(branchName) : DEFAULT_BRANCH_NAME;
+    }
+
+    public String filterOriginRemote(String scmBranch) {
+        Matcher scmBranchNameMatcher = Pattern.compile("(?:(?:[\\w_-]+)/)?(?:(?:[\\w_-]+)/)?([\\w_-]+)").matcher(scmBranch);
+        if (scmBranchNameMatcher.matches()) {
+            return scmBranchNameMatcher.group(1);
+        }
+        return scmBranch;
     }
 
     /**
