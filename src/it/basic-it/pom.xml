@@ -67,7 +67,6 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
             <manifestEntries>
-              <SCM-Branch>${scmBranch}</SCM-Branch>
               <SCM-Revision>${buildNumber}</SCM-Revision>
               <INC-Revision>${incrementedBuildNumber}</INC-Revision>
               <Build-Date>${timestamp}</Build-Date>

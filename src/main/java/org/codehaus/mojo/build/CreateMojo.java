@@ -127,6 +127,14 @@ public class CreateMojo
      */
     private File scmDirectory;
 
+    /**
+     * Local directory to be used to issue SCM actions
+     *
+     * @parameter expression="${maven.buildNumber.scmBranch}"
+     * @since 1.3.2
+     */
+    private String scmBranch;
+
 
     /**
      * You can rename the buildNumber property name to another property name if desired.
@@ -508,7 +516,9 @@ public class CreateMojo
             }
             project.getProperties().put( timestampPropertyName, timestamp );
 
-            String scmBranch = getScmBranch();
+            if (scmBranch == null) {
+                scmBranch = getScmBranch();
+            }
             getLog().info( "Storing buildScmBranch: " + scmBranch );
             project.getProperties().put( scmBranchPropertyName, scmBranch );
 
@@ -904,12 +914,16 @@ public class CreateMojo
 
     private String gitBranchName(ScmFileSet fileSet) throws ScmException
     {
+        String gitBranchEnv = System.getenv("GIT_BRANCH");
+        if (gitBranchEnv != null) {
+            getLog().debug("Environment variable GIT_BRANCH is used: " + gitBranchEnv);
+            return gitBranchEnv;
+        }
+
         CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
 
         Commandline cl = GitCommandLineUtils.getBaseGitCommandLine( fileSet.getBasedir(), "branch" );
         cl.createArg().setValue( "--no-color");
-        cl.createArg().setValue( "--contains");
-        cl.createArg().setValue("HEAD");
         GitBranchConsumer gitBranchConsumer = new GitBranchConsumer(getLogger());
 
         int exitCode = GitCommandLineUtils.execute(cl, gitBranchConsumer, stderr, getLogger());
