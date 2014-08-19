@@ -870,7 +870,7 @@ public class CreateMojo
                 localId = workdirConsumer.getModifications().get( 0 ).getRevision();
             }
             Commandline cl = GitCommandLineUtils.getBaseGitCommandLine( fileSet.getBasedir(), "rev-list" );
-            cl.createArg().setValue( "--all" );
+            cl.createArg().setValue( "HEAD" );
 
             LineConsumer consumer = new LineConsumer();
 
